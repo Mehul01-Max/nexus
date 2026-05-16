@@ -19,6 +19,7 @@ interface User {
   github_username: string | null
   organization: string | null
   role: string | null
+  github_app_installation_id: string | null
 }
 
 interface AuthContextType {

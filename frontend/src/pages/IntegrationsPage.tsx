@@ -50,21 +50,28 @@ export function IntegrationsPage() {
 
   // GitHub App installation state
   const [searchParams, setSearchParams] = useSearchParams()
-  const [ghAppInstalled, setGhAppInstalled] = useState(() =>
-    localStorage.getItem("nexus_github_app_installed") === "true"
-  )
+  const ghAppInstalled = !!user?.github_app_installation_id
+  const [isSavingApp, setIsSavingApp] = useState(false)
 
   useEffect(() => {
     const installationId = searchParams.get("installation_id")
-    if (installationId) {
-      localStorage.setItem("nexus_github_app_installed", "true")
-      setGhAppInstalled(true)
-      // Clean up the query params from the URL
-      searchParams.delete("installation_id")
-      searchParams.delete("setup_action")
-      setSearchParams(searchParams, { replace: true })
+    if (installationId && !ghAppInstalled && !isSavingApp) {
+      setIsSavingApp(true)
+      // Save the installation ID to the backend
+      import("@/lib/api").then(({ updateProfile }) => {
+        updateProfile({ github_app_installation_id: installationId })
+          .then(() => refreshUser())
+          .catch(console.error)
+          .finally(() => {
+            setIsSavingApp(false)
+            // Clean up the query params from the URL
+            searchParams.delete("installation_id")
+            searchParams.delete("setup_action")
+            setSearchParams(searchParams, { replace: true })
+          })
+      })
     }
-  }, [searchParams, setSearchParams])
+  }, [searchParams, setSearchParams, ghAppInstalled, isSavingApp, refreshUser])
 
   const [newRepo, setNewRepo] = useState("")
   const [selectedInstallation, setSelectedInstallation] = useState("")

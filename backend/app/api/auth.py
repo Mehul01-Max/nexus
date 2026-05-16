@@ -53,6 +53,7 @@ class UserResponse(BaseModel):
     github_username: str | None = None
     organization: str | None = None
     role: str | None = None
+    github_app_installation_id: str | None = None
 
 
 # ──────────────── Helpers ────────────────
@@ -68,6 +69,7 @@ def _user_dict(user: User) -> dict:
         "github_username": user.github_username,
         "organization": user.organization,
         "role": user.role,
+        "github_app_installation_id": user.github_app_installation_id,
     }
 
 
@@ -280,6 +282,7 @@ async def get_me(user: User = Depends(get_current_user)):
         github_username=user.github_username,
         organization=user.organization,
         role=user.role,
+        github_app_installation_id=user.github_app_installation_id,
     )
 
 
@@ -290,6 +293,7 @@ class UpdateProfileRequest(BaseModel):
     name: str | None = None
     organization: str | None = None
     role: str | None = None
+    github_app_installation_id: str | None = None
 
 
 @router.patch("/me", response_model=UserResponse)
@@ -304,6 +308,8 @@ async def update_me(
         current_user.organization = body.organization.strip() or None
     if body.role is not None:
         current_user.role = body.role.strip() or None
+    if body.github_app_installation_id is not None:
+        current_user.github_app_installation_id = body.github_app_installation_id.strip() or None
 
     await db.commit()
     await db.refresh(current_user)
@@ -317,4 +323,5 @@ async def update_me(
         github_username=current_user.github_username,
         organization=current_user.organization,
         role=current_user.role,
+        github_app_installation_id=current_user.github_app_installation_id,
     )

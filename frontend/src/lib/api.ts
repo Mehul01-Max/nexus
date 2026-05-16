@@ -89,7 +89,7 @@ export async function linkGithubAccount(code: string): Promise<{ ok: boolean; us
   })
 }
 
-export async function updateProfile(data: { name?: string; organization?: string; role?: string }): Promise<Record<string, unknown>> {
+export async function updateProfile(data: { name?: string; organization?: string; role?: string; github_app_installation_id?: string }): Promise<Record<string, unknown>> {
   return apiFetch("/auth/me", {
     method: "PATCH",
     body: JSON.stringify(data),
