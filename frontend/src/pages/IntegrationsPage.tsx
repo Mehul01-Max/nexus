@@ -38,7 +38,7 @@ import { cn } from "@/lib/utils"
 import { useAuth, getGithubLinkURL } from "@/lib/auth-context"
 
 export function IntegrationsPage() {
-  const { user, hasGithub } = useAuth()
+  const { user, hasGithub, refreshUser } = useAuth()
   const slackStatus = useSlackStatus()
   const isConnected = slackStatus.data?.connected ?? false
   const installations = slackStatus.data?.installations ?? []
