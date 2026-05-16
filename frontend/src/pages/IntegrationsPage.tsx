@@ -54,6 +54,9 @@ export function IntegrationsPage() {
   const [isSavingApp, setIsSavingApp] = useState(false)
 
   useEffect(() => {
+    // Clean up legacy localStorage key from previous versions
+    localStorage.removeItem("nexus_github_app_installed")
+    
     const installationId = searchParams.get("installation_id")
     if (installationId && !ghAppInstalled && !isSavingApp) {
       setIsSavingApp(true)
